@@ -10,7 +10,7 @@ import cv2
 import time
 from PIL import Image
 
-yolo =  YOLO(
+yolo = YOLO(
         model_path = 'model_data/weights/X-ylo-104.h5',
         anchors_path = 'model_data/yolo_anchors.txt',
         classes_path = 'model_data/classes.txt',
@@ -20,7 +20,7 @@ global graph
 graph = tf.get_default_graph()
 
 def detection():
-    
+
     start = time.time()
     frame = Image.open('./camera.jpg')
     print("readTime is: ", time.time() - start)    # recv file tmpframe.npy
