@@ -11,20 +11,22 @@ import cv2  # @UnresolvedImport
 import numpy as np
 import socket
 import json
+import requests
 import base64
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 import pickle
 
 WIDTH=416
 HEIGHT=416
-BUF_SIZE = 102400
+# BUF_SIZE = 102400
 
-client_addr = ('127.0.0.1', 9999)
-#client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.bind(client_addr)
-client.listen(1)
-sock, addr = client.accept()
+# client_addr = ('127.0.0.1', 9999)
+# #client = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+# client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# client.bind(client_addr)
+# client.listen(1)
+# sock, addr = client.accept()
+URL = 'http://127.0.0.1:8000/detection/'
 class OpencvWidget(QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -78,14 +80,18 @@ class OpencvWidget(QMainWindow):
             self.cap.release()
             del self.predictor, self.detector, self.cascade, self.cap
         super(OpencvWidget, self).closeEvent(event)
-        client.close()
+        # client.close()
         self.deleteLater()
 
     def onCapture(self):
-        rawdata = sock.recv(BUF_SIZE)
+        resp = requests.get(URL)
+        rawdata = resp.content.decode()
         json_data = pickle.loads(rawdata)
-        image_str = json_data["image"]
-        frame = Image.fromstring(image_str)
+        imagePIL = json_data["imagePIL"]
+        out_boxes = json_data["out_boxes"]
+        out_classes = json_data["out_classes"]
+        out_scores = json_data["out_scores"]
+        frame = self.drawpicture(imagePIL, out_boxes, out_classes, out_scores)
         frame = np.asarray(frame)
         '''
         self.strtoimage(data, 'test.jpg')
@@ -108,6 +114,43 @@ class OpencvWidget(QMainWindow):
         image_json.write(image_byte)
         image_json.close()
 
+    def drawpicture(self, image, out_boxes, out_classes, out_scores):
+        font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
+                                  size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+        thickness = (image.size[0] + image.size[1]) // 300
+
+        for i, c in reversed(list(enumerate(out_classes))):
+            predicted_class = self.class_names[c]
+            box = out_boxes[i]
+            score = out_scores[i]
+
+            label = '{} {:.2f}'.format(predicted_class, score)
+            draw = ImageDraw.Draw(image)
+            label_size = draw.textsize(label, font)
+
+            top, left, bottom, right = box
+            top = max(0, np.floor(top + 0.5).astype('int32'))
+            left = max(0, np.floor(left + 0.5).astype('int32'))
+            bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+            right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+            print(label, (left, top), (right, bottom))
+
+            if top - label_size[1] >= 0:
+                text_origin = np.array([left, top - label_size[1]])
+            else:
+                text_origin = np.array([left, top + 1])
+
+            # My kingdom for a good redistributable image drawing library.
+            for i in range(thickness):
+                draw.rectangle(
+                    [left + i, top + i, right - i, bottom - i],
+                    outline=self.colors[c])
+            draw.rectangle(
+                [tuple(text_origin), tuple(text_origin + label_size)],
+                fill=self.colors[c])
+            draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+            del draw
+        return image
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = OpencvWidget()

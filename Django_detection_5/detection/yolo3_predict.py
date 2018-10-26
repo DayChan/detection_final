@@ -36,6 +36,7 @@ def detect_one_img(yolo, frame):
     print("asArrayTime: ", time.time() - start)s
     '''
     #cv2.imshow(result)
+
     '''
     start = time.time()
     result_image.save(filename)

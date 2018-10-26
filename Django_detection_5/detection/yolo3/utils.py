@@ -35,7 +35,7 @@ def letterbox_image(image, size):
     new_image = Image.new('L', size, (128))####
     new_image.paste(image, ((w-nw)//2, (h-nh)//2))
     print("pasteTime + resizeTime: ", time.time() - start)
-    return new_image, cv2image
+    return new_image
 
 def rand(a=0, b=1):
     return np.random.rand()*(b-a) + a
