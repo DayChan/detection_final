@@ -33,7 +33,9 @@ class OpencvWidget(QMainWindow):
         super(OpencvWidget, self).__init__(*args, **kwargs)
         self.fps = 30
         self.createUI()
-        
+        self.classes_path = './classes.txt'
+        self.classes_names = self._get_class()
+        self.generate_colors()
     def createUI(self):
         self.resize(800, 600)
         self.setWindowTitle("Classifier")
@@ -151,6 +153,27 @@ class OpencvWidget(QMainWindow):
             draw.text(text_origin, label, fill=(0, 0, 0), font=font)
             del draw
         return image
+
+    def _get_class(self):
+        classes_path = os.path.expanduser(self.classes_path)
+        with open(classes_path) as f:
+            class_names = f.readlines()
+        class_names = [c.strip() for c in class_names]
+        return class_names
+
+    def generate_colors(self):
+        # Generate colors for drawing bounding boxes.
+        hsv_tuples = [(x / len(self.class_names), 1., 1.)
+                      for x in range(len(self.class_names))]
+        self.colors = list(map(lambda x: colorsys.hsv_to_rgb(*x), hsv_tuples))
+        self.colors = list(
+            map(lambda x: (int(x[0] * 255), int(x[1] * 255), int(x[2] * 255)),
+                self.colors))
+        np.random.seed(10101)  # Fixed seed for consistent colors across runs.
+        np.random.shuffle(self.colors)  # Shuffle colors to decorrelate adjacent classes.
+        np.random.seed(None)  # Reset seed to default.
+        return 1
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     w = OpencvWidget()

@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c4c3485a-9af3-48d8-9016-d3bd7f8b1e00" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/Django_detection_5/detection/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/Django_detection_5/detection/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Django_detection_5/detection/yolo.py" beforeDir="false" afterPath="$PROJECT_DIR$/Django_detection_5/detection/yolo.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Django_detection_5/detection/yolo3/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/Django_detection_5/detection/yolo3/utils.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Django_detection_5/detection/yolo3_predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/Django_detection_5/detection/yolo3_predict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py" beforeDir="false" afterPath="$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yolo3_predict.py" beforeDir="false" afterPath="$PROJECT_DIR$/yolo3_predict.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,29 +15,32 @@
     <session id="-717756688">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="2" />
+          <entry key="project.closed" value="3" />
           <entry key="project.open.time.10" value="1" />
+          <entry key="project.open.time.12" value="1" />
           <entry key="project.open.time.7" value="1" />
-          <entry key="project.opened" value="2" />
+          <entry key="project.opened" value="3" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="py" value="735" />
+          <entry key="py" value="883" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="Python" value="735" />
+          <entry key="Python" value="883" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="py" value="17" />
+          <entry key="txt" value="2" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
+          <entry key="PLAIN_TEXT" value="2" />
           <entry key="Python" value="16" />
           <entry key="UML" value="1" />
         </counts>
@@ -51,14 +50,14 @@
     </session>
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.5683318">
+    <splitter split-orientation="horizontal" split-proportion="0.43349755">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-          <file pinned="false" current-in-tab="true">
+          <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/yolo.py">
               <provider selected="true" editor-type-id="text-editor">
                 <state relative-caret-position="345">
-                  <caret line="36" column="13" lean-forward="true" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+                  <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
                 </state>
               </provider>
             </entry>
@@ -66,8 +65,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/mian_loop.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="465">
-                  <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+                <state relative-caret-position="435">
+                  <caret line="31" selection-start-line="31" selection-end-line="31" />
                   <folding>
                     <element signature="e#0#23#0" expanded="true" />
                   </folding>
@@ -78,7 +77,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/yolo3_predict.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="269">
+                <state relative-caret-position="270">
                   <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
                   <folding>
                     <element signature="e#0#10#0" expanded="true" />
@@ -90,8 +89,8 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/views.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="466">
-                  <caret line="41" column="23" lean-forward="true" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
+                <state relative-caret-position="589">
+                  <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
                   <folding>
                     <element signature="e#0#35#0" expanded="true" />
                   </folding>
@@ -102,7 +101,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo3/utils.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="364">
+                <state relative-caret-position="465">
                   <caret line="37" column="20" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
                 </state>
               </provider>
@@ -110,16 +109,14 @@
           </file>
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo3/model.py">
-              <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="-278" />
-              </provider>
+              <provider selected="true" editor-type-id="text-editor" />
             </entry>
           </file>
-          <file pinned="false" current-in-tab="false">
+          <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="401">
-                  <caret line="159" column="30" selection-start-line="159" selection-start-column="30" selection-end-line="159" selection-end-column="30" />
+                <state relative-caret-position="274">
+                  <caret line="25" column="21" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="21" />
                   <folding>
                     <element signature="e#102#117#0" expanded="true" />
                   </folding>
@@ -135,7 +132,7 @@
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/detection.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="465">
+                <state relative-caret-position="435">
                   <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
                   <folding>
                     <element signature="e#0#23#0" expanded="true" />
@@ -152,12 +149,12 @@
         </leaf>
       </split-first>
       <split-second>
-        <leaf>
+        <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file pinned="false" current-in-tab="false">
             <entry file="file://$PROJECT_DIR$/yolo3_predict.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="424">
-                  <caret line="38" selection-start-line="38" selection-end-line="38" />
+                <state relative-caret-position="169">
+                  <caret line="21" selection-start-line="21" selection-end-line="21" />
                   <folding>
                     <element signature="e#0#10#0" expanded="true" />
                   </folding>
@@ -168,8 +165,8 @@
           <file pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="1578">
-                  <caret line="158" column="25" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="25" />
+                <state relative-caret-position="189">
+                  <caret line="139" column="25" selection-start-line="139" selection-start-column="25" selection-end-line="139" selection-end-column="25" />
                   <folding>
                     <element signature="e#48#58#0" expanded="true" />
                   </folding>
@@ -195,8 +192,8 @@
         <option value="$PROJECT_DIR$/mian_loop.py" />
         <option value="$PROJECT_DIR$/yolo3_predict.py" />
         <option value="$PROJECT_DIR$/Django_detection_5/detection/yolo3/utils.py" />
-        <option value="$PROJECT_DIR$/Django_detection_5/detection/yolo.py" />
         <option value="$PROJECT_DIR$/Django_detection_5/detection/views.py" />
+        <option value="$PROJECT_DIR$/Django_detection_5/detection/yolo.py" />
         <option value="$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py" />
       </list>
     </option>
@@ -207,9 +204,9 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
-    <option name="x" value="13" />
-    <option name="y" value="48" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="25" />
+    <option name="y" value="142" />
     <option name="width" value="1400" />
     <option name="height" value="799" />
   </component>
@@ -234,6 +231,12 @@
               <item name="detection_final" type="b2602c69:ProjectViewProjectNode" />
               <item name="detection_final" type="462c0819:PsiDirectoryNode" />
               <item name="Django_detection_5" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="detection_final" type="b2602c69:ProjectViewProjectNode" />
+              <item name="detection_final" type="462c0819:PsiDirectoryNode" />
+              <item name="Django_detection_5" type="462c0819:PsiDirectoryNode" />
+              <item name="detection" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -298,10 +301,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="158" width="1400" height="799" extended-state="0" />
+    <frame x="25" y="142" width="1400" height="799" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.21870397" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.13254787" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -336,14 +339,8 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" column="7" lean-forward="true" selection-start-line="25" selection-start-column="7" selection-end-line="25" selection-end-column="7" />
-          <folding>
-            <element signature="e#0#10#0" expanded="true" />
-          </folding>
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/tests.py">
-      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="uml://Python/#/Users/imacair/Desktop/detection_final/Django_detection_5/detection/yolo3_predict.py">
       <provider selected="true" editor-type-id="UmlEditorProvider">
@@ -356,37 +353,36 @@
           <settings layout="Hierarchic Group" zoom="1.0" x="507.0" y="367.0" />
           <SelectedNodes />
           <Categories />
+          <SCOPE>All</SCOPE>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mian_loop.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" lean-forward="true" selection-start-line="31" selection-end-line="31" />
+        <state relative-caret-position="435">
+          <caret line="31" selection-start-line="31" selection-end-line="31" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo3/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-278" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo3/utils.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="364">
+        <state relative-caret-position="465">
           <caret line="37" column="20" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/models.py">
+    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo3/model.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/tests.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/detection.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
+        <state relative-caret-position="435">
           <caret line="31" column="25" selection-start-line="31" selection-start-column="25" selection-end-line="31" selection-end-column="25" />
           <folding>
             <element signature="e#0#23#0" expanded="true" />
@@ -394,50 +390,56 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/models.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yolo.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="36" column="13" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/yolo3_predict.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="269">
-          <caret line="27" column="34" selection-start-line="27" selection-start-column="34" selection-end-line="27" selection-end-column="34" />
+        <state relative-caret-position="169">
+          <caret line="21" selection-start-line="21" selection-end-line="21" />
           <folding>
             <element signature="e#0#10#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="401">
-          <caret line="159" column="30" selection-start-line="159" selection-start-column="30" selection-end-line="159" selection-end-column="30" />
-          <folding>
-            <element signature="e#102#117#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="41" column="23" lean-forward="true" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
+        <state relative-caret-position="589">
+          <caret line="41" column="23" selection-start-line="41" selection-start-column="23" selection-end-line="41" selection-end-column="23" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py">
+    <entry file="file://$PROJECT_DIR$/Django_detection_5/detection/yolo.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1578">
-          <caret line="158" column="25" selection-start-line="158" selection-start-column="25" selection-end-line="158" selection-end-column="25" />
+        <state relative-caret-position="274">
+          <caret line="25" column="21" selection-start-line="25" selection-start-column="9" selection-end-line="25" selection-end-column="21" />
           <folding>
-            <element signature="e#48#58#0" expanded="true" />
+            <element signature="e#102#117#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yolo.py">
+    <entry file="file://$PROJECT_DIR$/detection5_Qt/classes.txt">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/detection5_Qt/Qt_demo_video_django.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="36" column="13" lean-forward="true" selection-start-line="36" selection-start-column="13" selection-end-line="36" selection-end-column="13" />
+        <state relative-caret-position="189">
+          <caret line="139" column="25" selection-start-line="139" selection-start-column="25" selection-end-line="139" selection-end-column="25" />
+          <folding>
+            <element signature="e#48#58#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
