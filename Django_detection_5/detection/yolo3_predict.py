@@ -28,8 +28,8 @@ def detect_one_img(yolo, frame):
     frame = frame.convert('RGB')
     print("convertTime: ", time.time() - start)
     '''
-    cv2image, out_boxes, out_scores, out_classes = yolo.detect_image(frame) # save result.npy
-    return cv2image, out_boxes, out_scores, out_classes
+    out_boxes, out_scores, out_classes = yolo.detect_image(frame) # save result.npy
+    return out_boxes, out_scores, out_classes
     '''
     start = time.time()
     result = np.asarray(result_image)

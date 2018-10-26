@@ -85,13 +85,13 @@ class OpencvWidget(QMainWindow):
 
     def onCapture(self):
         resp = requests.get(URL)
-        rawdata = resp.content.decode()
+        rawdata = resp.content
         json_data = pickle.loads(rawdata)
-        imagePIL = json_data["imagePIL"]
+        framePIL = json_data["framePIL"]
         out_boxes = json_data["out_boxes"]
         out_classes = json_data["out_classes"]
         out_scores = json_data["out_scores"]
-        frame = self.drawpicture(imagePIL, out_boxes, out_classes, out_scores)
+        frame = self.drawpicture(framePIL, out_boxes, out_classes, out_scores)
         frame = np.asarray(frame)
         '''
         self.strtoimage(data, 'test.jpg')
