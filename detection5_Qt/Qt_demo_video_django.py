@@ -4,6 +4,8 @@
 
 import sys
 import time
+import colorsys
+import os
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -34,7 +36,7 @@ class OpencvWidget(QMainWindow):
         self.fps = 30
         self.createUI()
         self.classes_path = './classes.txt'
-        self.classes_names = self._get_class()
+        self.class_names = self._get_class()
         self.generate_colors()
     def createUI(self):
         self.resize(800, 600)
@@ -86,6 +88,7 @@ class OpencvWidget(QMainWindow):
         self.deleteLater()
 
     def onCapture(self):
+        start= time.time()
         resp = requests.get(URL)
         rawdata = resp.content
         json_data = pickle.loads(rawdata)
@@ -93,13 +96,14 @@ class OpencvWidget(QMainWindow):
         out_boxes = json_data["out_boxes"]
         out_classes = json_data["out_classes"]
         out_scores = json_data["out_scores"]
+        framePIL = framePIL.convert('RGB')
         frame = self.drawpicture(framePIL, out_boxes, out_classes, out_scores)
         frame = np.asarray(frame)
         '''
         self.strtoimage(data, 'test.jpg')
         frame = cv2.imread("test.jpg")
         '''
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        #frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         img = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
         del frame
         '''
@@ -108,6 +112,7 @@ class OpencvWidget(QMainWindow):
         del frame
         '''
         self.videoView.setPixmap(QPixmap.fromImage(img))
+        print("Time: ", time.time()-start)
 
     def strtoimage(self, str, filename):
         image_str = str.decode('ascii')
