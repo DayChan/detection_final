@@ -1,0 +1,5 @@
+0 helicopter
+1 UAV
+2 plane
+3 balloon
+4 bird
