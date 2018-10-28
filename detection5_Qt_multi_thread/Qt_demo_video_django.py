@@ -20,7 +20,7 @@ import threading
 WIDTH=416
 HEIGHT=416
 
-REMOTE_IP = "127.0.0.1"
+REMOTE_IP = "192.168.31.46"
 class OpencvWidget(QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -42,7 +42,7 @@ class OpencvWidget(QMainWindow):
         self.result_socket = self.result_context.socket(zmq.SUB)
         while True:
             try:
-                self.frame_socket.connect("tcp://127.0.0.1:5000")
+                self.frame_socket.connect("tcp://"+REMOTE_IP+":5000")
                 print("Frame socket connect successfully! ")
                 break
             except Exception as e:
@@ -51,7 +51,7 @@ class OpencvWidget(QMainWindow):
         self.frame_socket.setsockopt(zmq.SUBSCRIBE, b'')
         while True:
             try:
-                self.result_socket.connect("tcp://127.0.0.1:5001")
+                self.result_socket.connect("tcp://"+REMOTE_IP+":5001")
                 print("Result socket connect successfully! ")
                 break
             except Exception as e:
