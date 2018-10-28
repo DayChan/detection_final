@@ -55,7 +55,7 @@ class DetectionLoop():
         self.receive_socket.setsockopt(zmq.SUBSCRIBE, '')
         while True:
             try:
-                self.send_socket.bind("tcp://127.0.0.1:5001")
+                self.send_socket.bind("tcp://0.0.0.0:5001")
                 print("Send socket bind successfully! ")
                 break
             except Exception as e:
