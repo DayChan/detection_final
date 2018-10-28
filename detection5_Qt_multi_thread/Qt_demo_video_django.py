@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 
 import sys
 import time
@@ -34,6 +31,7 @@ class OpencvWidget(QMainWindow):
         self.class_names = self._get_class()
         self.generate_colors()
         self.pickle_data = 0                # pickle_data
+        self.receive_content = 0            # 接收的content
         self.result = 0                     # result
         self.frame_cv2 = 0
         self.frame_PIL_colorL = 0
@@ -44,22 +42,22 @@ class OpencvWidget(QMainWindow):
         self.result_socket = self.result_context.socket(zmq.SUB)
         while True:
             try:
-                self.frame_socket.connect("tcp://"+REMOTE_IP+":5000")
+                self.frame_socket.connect("tcp://127.0.0.1:5000")
                 print("Frame socket connect successfully! ")
                 break
             except Exception as e:
                 print("Wait for Camera Publisher.")
                 print(e)
-        self.frame_socket.setsockopt(zmq.SUBSCRIBE, '')
+        self.frame_socket.setsockopt(zmq.SUBSCRIBE, b'')
         while True:
             try:
-                self.result_socket.connect("tcp://"+REMOTE_IP+":5001")
-                print("Result socket bind successfully! ")
+                self.result_socket.connect("tcp://127.0.0.1:5001")
+                print("Result socket connect successfully! ")
                 break
             except Exception as e:
                 print("Wait for Result Publisher.")
                 print(e)
-        self.result_socket.setsockopt(zmq.SUBSCRIBE, '')
+        self.result_socket.setsockopt(zmq.SUBSCRIBE, b'')
 
     def createUI(self):
         self.resize(800, 600)
@@ -110,9 +108,9 @@ class OpencvWidget(QMainWindow):
             print('Wait for result in onCapture function.')
             time.sleep(1)
         start = time.time()
-        out_boxes = self.result["out_boxes"]
-        out_classes = self.result["out_classes"]
-        out_scores = self.result["out_scores"]
+        out_boxes = self.result[b"out_boxes"]
+        out_classes = self.result[b"out_classes"]
+        out_scores = self.result[b"out_scores"]
 
         frame = self.drawpicture(self.frame_PIL, out_boxes, out_classes, out_scores)
         frame = np.asarray(frame)
@@ -190,31 +188,38 @@ class OpencvWidget(QMainWindow):
     def receive_frame_loop(self):
         while True:
             try:
-                self.frame_cv2 = self.frame_socket.recv()
+                self.receive_content = self.frame_socket.recv()
+                print(type(self.receive_content))
+                time.sleep(1)
+                self.frame_cv2 = pickle.loads(self.receive_content, encoding='bytes')
+                cv2.imwrite("./picutre.jpg",self.frame_cv2)
                 self.frame_PIL_colorL = Image.fromarray(self.frame_cv2)
                 self.frame_PIL = self.frame_PIL_colorL.convert('RGB')
+                print("Received frame.")
             except Exception as e:
-                print("Receive frame waiting.")
+                print("Receive frame error.")
                 print(e)
+                time.sleep(1)
 
     def receive_result_loop(self):
         while True:
             try:
                 self.pickle_data = self.result_socket.recv()
-                self.result = pickle.loads(self.pickle_data)
+                self.result = pickle.loads(self.pickle_data, encoding='bytes')
+                print("Received result.")
             except Exception as e:
                 print("Receive frame waiting.")
                 print(e)
-
+                time.sleep(1)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     windows = OpencvWidget()
     windows.show()
 
-    multi_thread_receive_frame_loop = threading.Thread(target=windows.receive_frame_loop())
+    multi_thread_receive_frame_loop = threading.Thread(target=windows.receive_frame_loop)
     multi_thread_receive_frame_loop.start()     # 多开线程循环接收frame
-    multi_thread_receive_result_loop = threading.Thread(target=windows.receive_result_loop())
+    multi_thread_receive_result_loop = threading.Thread(target=windows.receive_result_loop)
     multi_thread_receive_result_loop.start()    # 多开线程循环接收result
 
     QTimer.singleShot(100, windows.start)             # 0.1秒后启动

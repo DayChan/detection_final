@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Miscellaneous utility functions."""
 
 from functools import reduce
@@ -22,7 +23,7 @@ def letterbox_image(image, size):
     '''resize image with unchanged aspect ratio using padding'''
     iw, ih = image.size
     w, h = size
-    scale = min(w/iw, h/ih)
+    scale = min(float(w)/iw, float(h)/ih)
     nw = int(iw*scale)
     nh = int(ih*scale)
 
