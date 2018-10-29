@@ -88,7 +88,7 @@ def yolo_body(inputs, num_anchors, num_classes):
 
     return Model(inputs, [y1,y2,y3])
 
-#深度可分离卷积的实现--2
+#深度可分离卷积的实现
 def X_DarknetConv2D(*args, **kwargs):
     """Wrapper to set Darknet parameters for Convolution2D."""
     darknet_conv_kwargs = {'depthwise_regularizer': l2(5e-4),'pointwise_regularizer': l2(5e-4)}
@@ -115,16 +115,15 @@ def X_resblock_body(x, num_filters, num_blocks):
                 DarknetConv2D_BN_Leaky(num_filters//2, (1,1)),
                 X_DarknetConv2D_BN_Leaky(num_filters, (3,3)))(x)
         x = Add()([x,y])
-    x = DarknetConv2D_BN_Leaky(num_filters, (1,1))
     return x
 def X_darknet_body(x):
     '''Darknent body having 52 Convolution2D layers'''
     x = X_DarknetConv2D_BN_Leaky(32, (3,3))(x)#320
     x = resblock_body(x, 64, 1)
     x = resblock_body(x, 128, 2)
-    x = resblock_body(x, 256, 3)
-    x = resblock_body(x, 256, 3)
-    x = resblock_body(x, 512, 2)#10
+    x = resblock_body(x, 256, 5)
+    x = resblock_body(x, 364, 6)
+    x = resblock_body(x, 728, 3)#10
     return x
 
 
@@ -132,9 +131,11 @@ def X_make_last_layers(x, num_filters, out_filters):
     '''6 Conv2D_BN_Leaky layers followed by a Conv2D_linear layer'''
     x = compose(
             X_DarknetConv2D_BN_Leaky(num_filters*2, (3,3)),
-            DarknetConv2D_BN_Leaky(num_filters, (1,1)))(x)#-1 leyer
+            DarknetConv2D_BN_Leaky(num_filters, (1,1)),
+            X_DarknetConv2D_BN_Leaky(num_filters*2, (3,3)),
+            DarknetConv2D_BN_Leaky(num_filters, (1,1)))(x)
     y = compose(
-            DarknetConv2D_BN_Leaky(num_filters, (3,3)),
+            DarknetConv2D_BN_Leaky(num_filters*2, (3,3)),
             DarknetConv2D(out_filters, (1,1)))(x)
     return x, y
 
@@ -149,18 +150,18 @@ def X_yolo_body(inputs, num_anchors, num_classes):
         print('i='+str(i)+'   '+l.name)
         i+=1
     '''
-    x, y1 = X_make_last_layers(darknet.output, 256, num_anchors*(num_classes+5))
+    x, y1 = X_make_last_layers(darknet.output, 364, num_anchors*(num_classes+5))
+
+    x = compose(
+            DarknetConv2D_BN_Leaky(256, (1,1)),
+            UpSampling2D(2))(x)
+    x = Concatenate()([x,darknet.layers[117].output])
+    x, y2 = X_make_last_layers(x, 256, num_anchors*(num_classes+5))
 
     x = compose(
             DarknetConv2D_BN_Leaky(128, (1,1)),
             UpSampling2D(2))(x)
-    x = Concatenate()([x,darknet.layers[82].output])
-    x, y2 = X_make_last_layers(x, 128, num_anchors*(num_classes+5))
-
-    x = compose(
-            DarknetConv2D_BN_Leaky(128, (1,1)),
-            UpSampling2D(2))(x)
-    x = Concatenate()([x,darknet.layers[57].output])
+    x = Concatenate()([x,darknet.layers[71].output])
     x, y3 = make_last_layers(x, 128, num_anchors*(num_classes+5))
 
     return Model(inputs, [y1,y2,y3])
