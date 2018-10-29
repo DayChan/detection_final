@@ -15,7 +15,7 @@ import pickle
 from PIL import Image
 '''
 yolo = YOLO(
-        model_path = 'model_data/weights/X-ylo-104.h5',
+        model_path = 'model_data/weights/trained_weights_stage.h5',
         anchors_path = 'model_data/yolo_anchors.txt',
         classes_path = 'model_data/classes.txt',
         gpu_num = 1,
@@ -28,7 +28,7 @@ graph = tf.get_default_graph()
 class DetectionLoop():
     def __init__(self):
         self.yolo = YOLO(
-            model_path='model_data/weights/X-ylo-104.h5',
+            model_path='model_data/weights/trained_weights_stage.h5',
             anchors_path='model_data/yolo_anchors.txt',
             classes_path='model_data/classes.txt',
             gpu_num=1,
@@ -46,7 +46,7 @@ class DetectionLoop():
 
         while True:
             try:
-                self.receive_socket.connect("tcp://127.0.0.1:5000")
+                self.receive_socket.connect("tcp://127.0.0.1:6666")
                 print("Recieve socket connect successfully! ")
                 break
             except Exception as e:
@@ -85,7 +85,9 @@ class DetectionLoop():
             try:
                 self.receive_content = self.receive_socket.recv()
 		print("Received data...")
-                self.frame_cv2 = pickle.loads(self.receive_content)
+                #self.frame_cv2 = pickle.loads(self.receive_content)
+		nparr = np.asarray(bytearray(self.receive_content), dtype="uint8") 
+    		self.frame_cv2 = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE) 
                 self.frame_PIL = Image.fromarray(self.frame_cv2)
             except Exception as e:
                 print("Receive frame error.")
