@@ -42,7 +42,7 @@ class OpencvWidget(QMainWindow):
         self.result_socket = self.result_context.socket(zmq.SUB)
         while True:
             try:
-                self.frame_socket.connect("tcp://"+REMOTE_IP+":5000")
+                self.frame_socket.connect("tcp://"+REMOTE_IP+":6666")
                 print("Frame socket connect successfully! ")
                 break
             except Exception as e:
@@ -191,8 +191,10 @@ class OpencvWidget(QMainWindow):
                 self.receive_content = self.frame_socket.recv()
                 print(type(self.receive_content))
                 time.sleep(1)
-                self.frame_cv2 = pickle.loads(self.receive_content, encoding='bytes')
-                cv2.imwrite("./picutre.jpg",self.frame_cv2)
+                #self.frame_cv2 = pickle.loads(self.receive_content, encoding='bytes')
+                #cv2.imwrite("./picutre.jpg",self.frame_cv2)
+                nparr = np.asarray(bytearray(self.receive_content), dtype="uint8")
+                self.frame_cv2 = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
                 self.frame_PIL_colorL = Image.fromarray(self.frame_cv2)
                 self.frame_PIL = self.frame_PIL_colorL.convert('RGB')
                 print("Received frame.")
