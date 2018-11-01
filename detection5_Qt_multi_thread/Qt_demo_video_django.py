@@ -20,12 +20,12 @@ import threading
 WIDTH=416
 HEIGHT=416
 
-REMOTE_IP = "192.168.31.46"
+REMOTE_IP = "192.168.4.2"
 class OpencvWidget(QMainWindow):
 
     def __init__(self, *args, **kwargs):
         super(OpencvWidget, self).__init__(*args, **kwargs)
-        self.fps = 60
+        self.fps = 30
         self.createUI()
         self.classes_path = './classes.txt'
         self.class_names = self._get_class()
@@ -36,6 +36,7 @@ class OpencvWidget(QMainWindow):
         self.frame_cv2 = 0
         self.frame_PIL_colorL = 0
         self.frame_PIL = 0                  # frame_PIL
+        self.frame_show = 0
         self.frame_context = zmq.Context()
         self.frame_socket = self.frame_context.socket(zmq.SUB)
         self.result_context = zmq.Context()
@@ -101,24 +102,15 @@ class OpencvWidget(QMainWindow):
         self.deleteLater()
 
     def onCapture(self):
-        while self.frame_PIL == 0:
-            print('Wait for frame in onCapture function.')
+        while self.frame_show is 0:
+            print('Wait for frame_show in onCapture function.')
             time.sleep(1)
-        while self.result == 0:
-            print('Wait for result in onCapture function.')
-            time.sleep(1)
-        start = time.time()
-        out_boxes = self.result[b"out_boxes"]
-        out_classes = self.result[b"out_classes"]
-        out_scores = self.result[b"out_scores"]
+        # start = time.time()
+        frame = self.frame_show
+        # img = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
 
-        frame = self.drawpicture(self.frame_PIL, out_boxes, out_classes, out_scores)
-        frame = np.asarray(frame)
-
-        img = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
-
-        self.videoView.setPixmap(QPixmap.fromImage(img))
-        print("Time: ", time.time()-start)
+        self.videoView.setPixmap(QPixmap.fromImage(self.frame_show))
+        # print("Time: ", time.time()-start)
 
     def strtoimage(self, str, filename):
         image_str = str.decode('ascii')
@@ -127,43 +119,59 @@ class OpencvWidget(QMainWindow):
         image_json.write(image_byte)
         image_json.close()
 
-    def drawpicture(self, image, out_boxes, out_classes, out_scores):
-        font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
-                                  size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
-        thickness = (image.size[0] + image.size[1]) // 300
+    def drawpicture(self):
+        while self.frame_PIL == 0:
+            print('Wait for frame in onCapture function.')
+            time.sleep(1)
+        while self.result == 0:
+            print('Wait for result in onCapture function.')
+            time.sleep(1)
+        while True:
+            try:
+                image = self.frame_PIL
+                out_boxes = self.result[b"out_boxes"]
+                out_classes = self.result[b"out_classes"]
+                out_scores = self.result[b"out_scores"]
+                
+                font = ImageFont.truetype(font='font/FiraMono-Medium.otf',
+                                        size=np.floor(3e-2 * image.size[1] + 0.5).astype('int32'))
+                thickness = (image.size[0] + image.size[1]) // 300
 
-        for i, c in reversed(list(enumerate(out_classes))):
-            predicted_class = self.class_names[c]
-            box = out_boxes[i]
-            score = out_scores[i]
+                for i, c in reversed(list(enumerate(out_classes))):
+                    predicted_class = self.class_names[c]
+                    box = out_boxes[i]
+                    score = out_scores[i]
 
-            label = '{} {:.2f}'.format(predicted_class, score)
-            draw = ImageDraw.Draw(image)
-            label_size = draw.textsize(label, font)
+                    label = '{} {:.2f}'.format(predicted_class, score)
+                    draw = ImageDraw.Draw(image)
+                    label_size = draw.textsize(label, font)
 
-            top, left, bottom, right = box
-            top = max(0, np.floor(top + 0.5).astype('int32'))
-            left = max(0, np.floor(left + 0.5).astype('int32'))
-            bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
-            right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
-            print(label, (left, top), (right, bottom))
+                    top, left, bottom, right = box
+                    top = max(0, np.floor(top + 0.5).astype('int32'))
+                    left = max(0, np.floor(left + 0.5).astype('int32'))
+                    bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+                    right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+                    print(label, (left, top), (right, bottom))
 
-            if top - label_size[1] >= 0:
-                text_origin = np.array([left, top - label_size[1]])
-            else:
-                text_origin = np.array([left, top + 1])
+                    if top - label_size[1] >= 0:
+                        text_origin = np.array([left, top - label_size[1]])
+                    else:
+                        text_origin = np.array([left, top + 1])
 
-            # My kingdom for a good redistributable image drawing library.
-            for i in range(thickness):
-                draw.rectangle(
-                    [left + i, top + i, right - i, bottom - i],
-                    outline=self.colors[c])
-            draw.rectangle(
-                [tuple(text_origin), tuple(text_origin + label_size)],
-                fill=self.colors[c])
-            draw.text(text_origin, label, fill=(0, 0, 0), font=font)
-            del draw
-        return image
+                    # My kingdom for a good redistributable image drawing library.
+                    for i in range(thickness):
+                        draw.rectangle(
+                            [left + i, top + i, right - i, bottom - i],
+                            outline=self.colors[c])
+                    draw.rectangle(
+                        [tuple(text_origin), tuple(text_origin + label_size)],
+                        fill=self.colors[c])
+                    draw.text(text_origin, label, fill=(0, 0, 0), font=font)
+                    del draw
+                frame = np.asarray(image)
+                self.frame_show = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
+            except Exception as e:
+                print("Draw Picture Wrong: ",e)
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -188,9 +196,9 @@ class OpencvWidget(QMainWindow):
     def receive_frame_loop(self):
         while True:
             try:
+                start = time.time()
                 self.receive_content = self.frame_socket.recv()
                 print(type(self.receive_content))
-                time.sleep(1)
                 #self.frame_cv2 = pickle.loads(self.receive_content, encoding='bytes')
                 #cv2.imwrite("./picutre.jpg",self.frame_cv2)
                 nparr = np.asarray(bytearray(self.receive_content), dtype="uint8")
@@ -198,6 +206,7 @@ class OpencvWidget(QMainWindow):
                 self.frame_PIL_colorL = Image.fromarray(self.frame_cv2)
                 self.frame_PIL = self.frame_PIL_colorL.convert('RGB')
                 print("Received frame.")
+                print("Time: ", time.time()-start)
             except Exception as e:
                 print("Receive frame error.")
                 print(e)
@@ -223,6 +232,8 @@ if __name__ == "__main__":
     multi_thread_receive_frame_loop.start()     # 多开线程循环接收frame
     multi_thread_receive_result_loop = threading.Thread(target=windows.receive_result_loop)
     multi_thread_receive_result_loop.start()    # 多开线程循环接收result
+    multi_thread_receive_result_loop = threading.Thread(target=windows.drawpicture)
+    multi_thread_receive_result_loop.start()    # 多开线程循环画框
 
     QTimer.singleShot(100, windows.start)             # 0.1秒后启动
     sys.exit(app.exec_())
