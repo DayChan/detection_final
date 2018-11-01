@@ -450,8 +450,8 @@ int main()
         //BufferList
         bufferList = pDataStream->GetBufferList();
 
-        // 4 buffers using internal buffer mode
-        for(int i=0; i<4; i++)
+        // 2 buffer(s) using internal buffer mode	// change buffer size (use i)
+        for(int i=0; i<2; i++)
         {
             pBuffer = new BGAPI2::Buffer();
             bufferList->Add(pBuffer);
@@ -543,7 +543,9 @@ int main()
                     zmq::message_t msg(data_encode.size());
                     memcpy(msg.data(), data_encode.data(), data_encode.size());
                     skt.send(msg);
+                    usleep(200000);
                     pBufferFilled->QueueBuffer();
+                    
             }
         }
     }
