@@ -24,8 +24,8 @@ class YOLO(object):
         "model_path": 'model_data/yolov3_6600.h5',
         "anchors_path": 'model_data/yolo_anchors.txt',
         "classes_path": 'model_data/classes.txt',
-        "score" : 0.3,
-        "iou" : 0.45,
+        "score" : 0.07,
+        "iou" : 0.07,
         "model_image_size" : (608, 608),
         "gpu_num" : 1,
     }
@@ -72,8 +72,8 @@ class YOLO(object):
 
         except Exception as e:
             print(e)
-            self.yolo_model = tiny_yolo_body(Input(shape=(None,None,1)), num_anchors//2, num_classes) \
-                if is_tiny_version else X_yolo_body(Input(shape=(None,None,1)), num_anchors//3, num_classes)#改了？
+            self.yolo_model = not_pooling_tiny_yolo_body(Input(shape=(None,None,1)), num_anchors//2, num_classes) \
+                if is_tiny_version else not_pooling_tiny_yolo_body2(Input(shape=(None,None,1)), num_anchors//3, num_classes)#改了？
             self.yolo_model.load_weights(self.model_path) # make sure model, anchors and classes match
         else:
             assert self.yolo_model.layers[-1].output_shape[-1] == \

@@ -13,6 +13,10 @@ import pickle
 import threading
 import pickle
 from PIL import Image
+from keras.backend.tensorflow_backend import set_session
+config = tf.ConfigProto()
+config.gpu_options.per_process_gpu_memory_fraction = 0.5
+set_session(tf.Session(config=config))
 '''
 yolo = YOLO(
         model_path = 'model_data/weights/trained_weights_stage.h5',
@@ -28,8 +32,8 @@ graph = tf.get_default_graph()
 class DetectionLoop():
     def __init__(self):
         self.yolo = YOLO(
-            model_path='model_data/weights/trained_weights_stage.h5',
-            anchors_path='model_data/yolo_anchors.txt',
+            model_path='model_data/weights/trained_weights_stage_gray_tiny_yolo.h5',
+            anchors_path='model_data/my_tiny_anchors.txt',
             classes_path='model_data/classes.txt',
             gpu_num=1,
         )
