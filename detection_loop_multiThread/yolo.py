@@ -72,7 +72,7 @@ class YOLO(object):
 
         except Exception as e:
             print(e)
-            self.yolo_model = not_pooling_tiny_yolo_body6(Input(shape=(None,None,1)), num_anchors//2, num_classes) \
+            self.yolo_model = res_not_pooling_tiny_yolo_body7(Input(shape=(None,None,1)), num_anchors//2, num_classes) \
                 if is_tiny_version else not_pooling_tiny_yolo_body2(Input(shape=(None,None,1)), num_anchors//3, num_classes)#改了？
             self.yolo_model.load_weights(self.model_path) # make sure model, anchors and classes match
         else:
@@ -100,6 +100,7 @@ class YOLO(object):
         boxes, scores, classes = yolo_eval(self.yolo_model.output, self.anchors,
                 len(self.class_names), self.input_image_shape,
                 score_threshold=self.score, iou_threshold=self.iou)
+        print("boxes:",boxes,"scores",scores,"classes:",classes)
         return boxes, scores, classes
 
     def detect_image(self, image):
@@ -126,6 +127,7 @@ class YOLO(object):
                 self.input_image_shape: [image.size[1], image.size[0]],
                 K.learning_phase(): 0
             })
+        filter_boxes(out_boxes, out_scores, out_classes)
         print("predictTime: ", timer() - startPre)
         print('Found {} boxes for {}'.format(len(out_boxes), 'img'))
         '''
@@ -214,3 +216,51 @@ def detect_video(yolo, video_path, output_path=""):
             break
     yolo.close_session()
 
+def filter_boxes(out_boxes, out_scores, out_classes):
+    """
+    out_boxes = [[187.9777, -9.5165205, 777.2686, 902.68054],
+                 [151.95294, 535.67737, 242.61598, 645.80597],
+                 [197.97777, -9.5165205, 777.2686, 902.68054],
+                 [104.001785, 664.8004, 191.59044, 790.4712]]
+    out_scores = [0.30529305, 0.27804533, 0.15484284, 0.12531385]
+    out_classes = [2, 4, 4, 4]
+    out_boxes = np.array(out_boxes, dtype="float32")
+    out_scores = np.array(out_scores, dtype="float32")
+    out_classes = np.array(out_classes, dtype="int32")
+
+    # TEST DATA ABOVE
+    """
+    mask = [0] * out_boxes.shape[0]
+    delete_index = []
+    for i in range(out_boxes.shape[0]):
+        for j in range(i + 1, out_boxes.shape[0]):
+            if mask[i] != 0:
+                break
+            elif mask[j] != 0:
+                continue
+            if iou(out_boxes[i], out_boxes[j]) > 0.6:
+                if out_scores[i] < out_scores[j]:
+                    mask[i] = 1
+                else:
+                    mask[j] = 1     # mask generate
+
+    for i in range(len(mask)):
+        if mask[i] != 0:
+            delete_index.append(i)  # index list waiting for delete
+
+    out_boxes = np.delete(out_boxes, delete_index, axis=0)
+    out_scores = np.delete(out_scores, delete_index, axis=0)
+    out_classes = np.delete(out_classes, delete_index, axis=0)  # 删除
+    print(out_boxes, out_scores, out_classes)
+    return out_boxes, out_scores, out_classes
+
+
+def iou(box1, box2):
+    cross_width = min(box1[3], box2[3]) - max(box1[1], box2[1])
+    cross_height = min(box1[2], box2[2]) - max(box1[0], box2[0])
+    if cross_width <= 0 or cross_height <= 0:
+        return 0.0
+    box1_area = (box1[3] - box1[1]) * (box1[2] - box1[0])
+    box2_area = (box2[3] - box2[1]) * (box2[2] - box2[0])
+    cross_area = cross_height * cross_width
+    return cross_area / (box1_area + box2_area - cross_area)
