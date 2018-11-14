@@ -543,7 +543,7 @@ int main()
                     zmq::message_t msg(data_encode.size());
                     memcpy(msg.data(), data_encode.data(), data_encode.size());
                     skt.send(msg);
-                    usleep(200000);
+                    usleep(40000);
                     pBufferFilled->QueueBuffer();
                     
             }

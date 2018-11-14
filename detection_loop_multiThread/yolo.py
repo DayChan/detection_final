@@ -127,7 +127,7 @@ class YOLO(object):
                 self.input_image_shape: [image.size[1], image.size[0]],
                 K.learning_phase(): 0
             })
-        filter_boxes(out_boxes, out_scores, out_classes)
+        out_boxes, out_scores, out_classes = filter_boxes(out_boxes, out_scores, out_classes)
         print("predictTime: ", timer() - startPre)
         print('Found {} boxes for {}'.format(len(out_boxes), 'img'))
         '''
@@ -238,7 +238,7 @@ def filter_boxes(out_boxes, out_scores, out_classes):
                 break
             elif mask[j] != 0:
                 continue
-            if iou(out_boxes[i], out_boxes[j]) > 0.6:
+            if iou(out_boxes[i], out_boxes[j]) > 0.5:
                 if out_scores[i] < out_scores[j]:
                     mask[i] = 1
                 else:
@@ -251,11 +251,11 @@ def filter_boxes(out_boxes, out_scores, out_classes):
     out_boxes = np.delete(out_boxes, delete_index, axis=0)
     out_scores = np.delete(out_scores, delete_index, axis=0)
     out_classes = np.delete(out_classes, delete_index, axis=0)  # 删除
-    print(out_boxes, out_scores, out_classes)
     return out_boxes, out_scores, out_classes
 
-
+# y1 x1 y2 x2
 def iou(box1, box2):
+    # print(box1,box2)
     cross_width = min(box1[3], box2[3]) - max(box1[1], box2[1])
     cross_height = min(box1[2], box2[2]) - max(box1[0], box2[0])
     if cross_width <= 0 or cross_height <= 0:
