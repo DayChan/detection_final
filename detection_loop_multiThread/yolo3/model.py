@@ -402,6 +402,89 @@ def not_pooling_tiny_yolo_body6(inputs, num_anchors, num_classes):
             DarknetConv2D(num_anchors*(num_classes+5), (1,1)))([x2,x1])
     return Model(inputs, [y1,y2])
 
+def res_not_pooling_tiny_yolo_body7(inputs, num_anchors, num_classes):
+    x1 = compose(
+            DarknetConv2D_BN_Leaky(16, (3,3)),
+            X_DarknetConv2D_BN_Leaky(16, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(32, (3,3)),
+            X_DarknetConv2D_BN_Leaky(32, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(64, (3,3)),
+            X_DarknetConv2D_BN_Leaky(64, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(128, (3,3)),
+            X_DarknetConv2D_BN_Leaky(128, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(256, (3,3)))(inputs)
+    x2 = compose(
+            X_DarknetConv2D_BN_Leaky(256, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(512, (1,1)))(x1)
+    for i in range(3):
+        res = compose(
+                X_DarknetConv2D_BN_Leaky(512, (3,3)),
+                X_DarknetConv2D_BN_Leaky(512, (3,3)))(x2)
+        x2 = Add()([x2,res])
+    x2 = DarknetConv2D_BN_Leaky(1024, (1,1))(x2)
+    
+    for i in range(1):
+        res = compose(
+            X_DarknetConv2D_BN_Leaky(1024, (3,3)),
+            X_DarknetConv2D_BN_Leaky(1024, (3,3)))(x2)
+        x2 = Add()([x2,res])
+    x2 = DarknetConv2D_BN_Leaky(256, (1,1))(x2)
+    
+    y1 = compose(
+            DarknetConv2D_BN_Leaky(512, (3,3)),
+            DarknetConv2D(num_anchors*(num_classes+5), (1,1)))(x2)
+
+    x2 = compose(
+            DarknetConv2D_BN_Leaky(256, (1,1)),
+            UpSampling2D(2))(x2)
+    y2 = compose(
+            Concatenate(),
+            DarknetConv2D_BN_Leaky(256, (3,3)),
+            DarknetConv2D(num_anchors*(num_classes+5), (1,1)))([x2,x1])
+    return Model(inputs, [y1,y2])
+
+
+def res_not_pooling_tiny_yolo_body8(inputs, num_anchors, num_classes):
+    x1 = compose(
+            DarknetConv2D_BN_Leaky(16, (3,3)),
+            X_DarknetConv2D_BN_Leaky(16, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(32, (3,3)),
+            X_DarknetConv2D_BN_Leaky(32, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(64, (3,3)),
+            X_DarknetConv2D_BN_Leaky(64, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(128, (3,3)),
+            X_DarknetConv2D_BN_Leaky(128, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(256, (3,3)))(inputs)
+    x2 = compose(
+            X_DarknetConv2D_BN_Leaky(256, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(512, (1,1)))(x1)
+    for i in range(4):
+        res = compose(
+                X_DarknetConv2D_BN_Leaky(512, (3,3)),
+                X_DarknetConv2D_BN_Leaky(512, (3,3)))(x2)
+        x2 = Add()([x2,res])
+    x2 = DarknetConv2D_BN_Leaky(1024, (1,1))(x2)
+    
+    for i in range(2):
+        res = compose(
+            X_DarknetConv2D_BN_Leaky(1024, (3,3)),
+            X_DarknetConv2D_BN_Leaky(1024, (3,3)))(x2)
+        x2 = Add()([x2,res])
+    #x2 = DarknetConv2D_BN_Leaky(512, (1,1))(x2)
+    
+    y1 = compose(
+            DarknetConv2D_BN_Leaky(512, (3,3)),
+            DarknetConv2D(num_anchors*(num_classes+5), (1,1)))(x2)
+
+    x2 = compose(
+            DarknetConv2D_BN_Leaky(256, (1,1)),
+            UpSampling2D(2))(x2)
+    y2 = compose(
+            Concatenate(),
+            DarknetConv2D_BN_Leaky(256, (3,3)),
+            DarknetConv2D(num_anchors*(num_classes+5), (1,1)))([x2,x1])
+    return Model(inputs, [y1,y2])
+
 def not_pooling_tiny_yolo_body7(inputs, num_anchors, num_classes):
     x1 = compose(
             DarknetConv2D_BN_Leaky(16, (3,3)),
@@ -415,6 +498,8 @@ def not_pooling_tiny_yolo_body7(inputs, num_anchors, num_classes):
             DarknetConv2D_BN_Leaky(256, (3,3)))(inputs)
     x2 = compose(
             X_DarknetConv2D_BN_Leaky(256, (3,3), strides=(2,2),padding='same'),
+            DarknetConv2D_BN_Leaky(512, (1,1)),
+            X_DarknetConv2D_BN_Leaky(512, (3,3)),
             DarknetConv2D_BN_Leaky(512, (1,1)),
             X_DarknetConv2D_BN_Leaky(512, (3,3)),
             DarknetConv2D_BN_Leaky(512, (1,1)),

@@ -60,24 +60,21 @@ class DetectionLoop():
             print('Wait for frame in detection function.')
             time.sleep(1)
 
-        start = time.time()
+        #start = time.time()
         with self.graph.as_default():
             out_boxes, out_scores, out_classes = self.yolo.detect_image(self.frame_PIL)
-        print("detectAllTime is: ", time.time() - start)
-        self.send_data = {
-            "out_boxes": out_boxes,
-            "out_scores": out_scores,
-            "out_classes": out_classes
-        }
-        self.multi_thread_send = threading.Thread(target=self.sender, args=(self.send_data,))   # 增加线程发送
-        self.multi_thread_send.setDaemon(True)
-        self.multi_thread_send.start()
-
+            if out_boxes.all():
+	        print("out_boxes: ",out_boxes)
+            if out_scores.all():
+	        print("out_scores: ",out_scores)
+            if out_classes.all():
+	        print("out_classes: ",out_classes)
+        #print("detectAllTime is: ", time.time() - start)
     def receive_frame_loop(self):
         while True:
             try:
                 self.receive_content = self.receive_socket.recv()
-		print("Received data...")
+		#print("Received data...")
                 #self.frame_cv2 = pickle.loads(self.receive_content)
 		nparr = np.asarray(bytearray(self.receive_content), dtype="uint8") 
     		self.frame_cv2 = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE) 
@@ -91,7 +88,7 @@ class DetectionLoop():
         pickle_data = pickle.dumps(data)
         print(type(pickle_data))
         self.send_socket.send(pickle_data)
-        print("Send Fine.")
+        #print("Send Fine.")
 
 
 if __name__ == '__main__':
@@ -101,9 +98,9 @@ if __name__ == '__main__':
     multi_thread_receive_frame_loop.start()     # 多开线程循环接收
     while True:
         try:
-            print("Going to step detection.")
+            # print("Going to step detection.")
             detection_loop.detection()
-            print("Detection Fine.")
+            # print("Detection Fine.")
         except Exception as e:
             print(e)
             time.sleep(1)
