@@ -1,5 +1,5 @@
-0 helicopter
-1 UAV
-2 plane
+0 Single Rotor
+1 Multi-Rotor
+2 Fixed Wing
 3 balloon
 4 bird

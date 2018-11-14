@@ -1,4 +1,4 @@
-
+﻿
 import sys
 import time
 import colorsys
@@ -10,7 +10,6 @@ import cv2  # @UnresolvedImport
 import numpy as np
 import socket
 import json
-import requests
 import base64
 from PIL import Image, ImageFont, ImageDraw
 import pickle
@@ -19,8 +18,9 @@ import threading
 
 WIDTH=416
 HEIGHT=416
+REMOTE_IP = "192.168.4.2"
 
-REMOTE_IP = "192.168.31.48"
+
 class OpencvWidget(QMainWindow):
 
     def __init__(self, *args, **kwargs):
@@ -61,30 +61,38 @@ class OpencvWidget(QMainWindow):
         self.result_socket.setsockopt(zmq.SUBSCRIBE, b'')
 
     def createUI(self):
+
         self.resize(800, 600)
-        self.setWindowTitle("Classifier")
-        self.videoView = QLabel("稍候，正在初始化数据和摄像头。。。")
-        self.videoView.setAlignment(Qt.AlignCenter)
-        self.text_result1 = QLabel("")
-        self.text_result2 = QLabel("")
-        self.text_result3 = QLabel("")
-        self.text_result4 = QLabel("")
-        self.text_result5 = QLabel("")
-        self.text_result1.setAlignment(Qt.AlignCenter)
-        self.text_result2.setAlignment(Qt.AlignCenter)
-        self.text_result3.setAlignment(Qt.AlignCenter)
-        self.text_result4.setAlignment(Qt.AlignCenter)
-        self.text_result5.setAlignment(Qt.AlignCenter)
-        self.vlayout = QVBoxLayout()
-        self.vlayout.addWidget(self.videoView)
-        self.vlayout.addWidget(self.text_result1)
-        self.vlayout.addWidget(self.text_result2)
-        self.vlayout.addWidget(self.text_result3)
-        self.vlayout.addWidget(self.text_result4)
-        self.vlayout.addWidget(self.text_result5)
-        self.widget = QWidget()
-        self.widget.setLayout(self.vlayout)
-        self.setCentralWidget(self.widget)
+        self.setWindowTitle("Detection System Client")
+        title = QLabel("基于深度学习的目标检测系统")
+        title.setAlignment(Qt.AlignCenter)
+        self.video_view = QLabel("稍候，正在初始化数据和摄像头")
+        self.video_view.setAlignment(Qt.AlignCenter)
+        self.label_text = QLabel("Classification：")
+        self.location_text = QLabel("Location: ")
+        self.target_size_text = QLabel("Target size: ")
+        self.FPS_text = QLabel("FPS: ")
+
+        third_vlayout = QVBoxLayout()
+        third_vlayout.addWidget(self.label_text)
+        third_vlayout.addWidget(self.location_text)
+        third_vlayout.addWidget(self.target_size_text)
+        third_vlayout.addWidget(self.FPS_text)
+        third_widget = QWidget()
+        third_widget.setLayout(third_vlayout)
+
+        secondary_hlayout = QHBoxLayout()
+        secondary_hlayout.addWidget(self.video_view)
+        secondary_hlayout.addWidget(third_widget)
+        secondary_widget = QWidget()
+        secondary_widget.setLayout(secondary_hlayout)
+
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(title)
+        main_layout.addWidget(secondary_widget)
+        main_widget = QWidget()
+        main_widget.setLayout(main_layout)
+        self.setCentralWidget(main_widget)
 
     def start(self):
         try:
@@ -105,11 +113,7 @@ class OpencvWidget(QMainWindow):
         while self.frame_show is 0:
             print('Wait for frame_show in onCapture function.')
             time.sleep(1)
-        # start = time.time()
-        frame = self.frame_show
-        # img = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
-
-        self.videoView.setPixmap(QPixmap.fromImage(self.frame_show))
+        self.video_view.setPixmap(QPixmap.fromImage(self.frame_show))
         # print("Time: ", time.time()-start)
 
     def strtoimage(self, str, filename):
@@ -142,7 +146,8 @@ class OpencvWidget(QMainWindow):
                     box = out_boxes[i]
                     score = out_scores[i]
 
-                    label = '{} {:.2f}'.format(predicted_class, score)
+                    # label = '{} {:.2f}'.format(predicted_class, score)
+                    label = '{}'.format(predicted_class)
                     draw = ImageDraw.Draw(image)
                     label_size = draw.textsize(label, font)
 
@@ -169,9 +174,32 @@ class OpencvWidget(QMainWindow):
                     draw.text(text_origin, label, fill=(0, 0, 0), font=font)
                     del draw
                 frame = np.asarray(image)
-                self.frame_show = QImage(frame.data, frame.shape[1], frame.shape[0], frame.shape[1] * 3, QImage.Format_RGB888)
+                self.frame_show = QImage(frame.data, frame.shape[1] / 2, frame.shape[0] / 2, frame.shape[1] * 3,
+                                         QImage.Format_RGB888)
+
+                # 设置右边框数据
+                if out_boxes.shape[0] == 0:
+                    self.label_text.setText("Classification: ")
+                    self.location_text.setText("Location: ")
+                    self.target_size_text.setText("Target size: ")
+                    self.FPS_text.setText("FPS: ")
+                else:
+                    top, left, bottom, right = out_boxes[0]
+                    top = max(0, np.floor(top + 0.5).astype('int32'))
+                    left = max(0, np.floor(left + 0.5).astype('int32'))
+                    bottom = min(image.size[1], np.floor(bottom + 0.5).astype('int32'))
+                    right = min(image.size[0], np.floor(right + 0.5).astype('int32'))
+                    label_string = "Classification: " + str(self.class_names[out_classes[0]])
+                    location_string = "Location: " + '[' + str(left) + ',' + str(top) + ',' + str(right) +\
+                                      ',' + str(bottom) + ']'
+                    target_size_string = "Target size: " + "(" + str(right - left) + " * " + str(bottom - top) + ")"
+                    FPS_string = "FPS: " + str(self.FPS)
+                    self.label_text.setText(label_string)
+                    self.location_text.setText(location_string)
+                    self.target_size_text.setText(target_size_string)
+                    self.FPS_text.setText(FPS_string)
             except Exception as e:
-                print("Draw Picture Wrong: ",e)
+                print("Draw Picture Wrong: ", e)
 
     def _get_class(self):
         classes_path = os.path.expanduser(self.classes_path)
@@ -199,14 +227,14 @@ class OpencvWidget(QMainWindow):
                 start = time.time()
                 self.receive_content = self.frame_socket.recv()
                 print(type(self.receive_content))
-                #self.frame_cv2 = pickle.loads(self.receive_content, encoding='bytes')
-                #cv2.imwrite("./picutre.jpg",self.frame_cv2)
                 nparr = np.asarray(bytearray(self.receive_content), dtype="uint8")
                 self.frame_cv2 = cv2.imdecode(nparr, cv2.IMREAD_GRAYSCALE)
                 self.frame_PIL_colorL = Image.fromarray(self.frame_cv2)
                 self.frame_PIL = self.frame_PIL_colorL.convert('RGB')
                 print("Received frame.")
-                print("Time: ", time.time()-start)
+                used_time = time.time() - start
+                self.FPS = int(1 / used_time)
+                print("Time: ", used_time)
             except Exception as e:
                 print("Receive frame error.")
                 print(e)
@@ -222,6 +250,7 @@ class OpencvWidget(QMainWindow):
                 print("Receive frame waiting.")
                 print(e)
                 time.sleep(1)
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
